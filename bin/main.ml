@@ -2,7 +2,10 @@ open Core
 
 let process_file f =
   let file = In_channel.create f in
-  List.iter ~f:print_endline (In_channel.input_lines file)
+  In_channel.input_lines file
+  |> List.map ~f:(String.split ~on:',')
+  |> List.map ~f:List.length
+  |> List.iter ~f:(fun x -> print_endline (Int.to_string x))
 
 let command =
   Command.basic
