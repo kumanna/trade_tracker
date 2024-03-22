@@ -15,6 +15,7 @@ type t = {
   stamp_duty : float;
   sebi_turnover_fees : float;
   brokerage : float option;
+  gst : float option;
 }
 
 let create_transaction
@@ -31,7 +32,8 @@ let create_transaction
     stt
     stamp_duty
     sebi_turnover_fees
-    brokerage =
+    brokerage
+    gst =
   {
     settlement_date;
     order;
@@ -47,6 +49,7 @@ let create_transaction
     stamp_duty;
     sebi_turnover_fees;
     brokerage;
+    gst;
   }
 
 let print_transaction   {
@@ -64,6 +67,7 @@ let print_transaction   {
     stamp_duty;
     sebi_turnover_fees;
     brokerage;
+    gst;
   } =
   print_endline (String.concat ~sep:"," [
       settlement_date;
@@ -79,9 +83,12 @@ let print_transaction   {
       Float.to_string stt;
       Float.to_string stamp_duty;
       Float.to_string sebi_turnover_fees;
-      match brokerage with
+      (match brokerage with
       | None -> "NOBROKERAGE"
-      | Some x -> Float.to_string x;
+      | Some x -> Float.to_string x);
+      (match gst with
+      | None -> "NOGST"
+      | Some x -> Float.to_string x);
   ])
 
 let list_to_transaction l =
@@ -99,8 +106,10 @@ let list_to_transaction l =
     stt = List.nth_exn l 10 |> Float.of_string;
     stamp_duty = List.nth_exn l 11 |> Float.of_string;
     sebi_turnover_fees = List.nth_exn l 12 |> Float.of_string;
-    brokerage = let v = List.nth_exn l 13 in
-      if String.length v > 0 then Some (Float.of_string v) else None;
+    brokerage = (let v = List.nth_exn l 13 in
+      if String.length v > 0 then Some (Float.of_string v) else None);
+    gst = (let v = List.nth_exn l 14 in
+      if String.length v > 0 then Some (Float.of_string v) else None);
   }
 
 let get_order t

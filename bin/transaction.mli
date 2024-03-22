@@ -15,6 +15,7 @@ val create_transaction :
   float -> (* stamp_duty *)
   float -> (* sebi_turnover_fees *)
   float option -> (* brokerage *)
+  float option -> (* gst *)
   t
 
 val list_to_transaction : string list -> t
