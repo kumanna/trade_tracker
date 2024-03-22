@@ -1,5 +1,5 @@
 (executable
  (public_name trade_tracker)
- (libraries core core_unix.command_unix)
+ (libraries core core_unix.command_unix sqlite3)
  (preprocess (pps ppx_jane))
  (name main))
