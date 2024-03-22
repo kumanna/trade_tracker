@@ -12,4 +12,4 @@ let command =
      let%map filename = anon ("filename" %: string) in
      fun () -> list_filename filename)
 
-let () = Command_unix.run ~version:"1.0" command
+let () = Command_unix.run ~version:"0.1" command
