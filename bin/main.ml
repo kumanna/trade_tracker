@@ -1,7 +1,8 @@
 open Core
 
-let list_filename f =
-  print_endline f
+let process_file f =
+  let file = In_channel.create f in
+  List.iter ~f:print_endline (In_channel.input_lines file)
 
 let command =
   Command.basic
@@ -10,6 +11,6 @@ let command =
     (let open Command.Let_syntax in
      let open Command.Param in
      let%map filename = anon ("filename" %: string) in
-     fun () -> list_filename filename)
+     fun () -> process_file filename)
 
 let () = Command_unix.run ~version:"0.1" command
