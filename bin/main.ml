@@ -1,11 +1,13 @@
 open Core
+open Transaction
 
 let process_file f =
   let file = In_channel.create f in
   In_channel.input_lines file
+  |> List.tl_exn
   |> List.map ~f:(String.split ~on:',')
-  |> List.map ~f:List.length
-  |> List.iter ~f:(fun x -> print_endline (Int.to_string x))
+  |> List.map ~f:list_to_transaction
+  |> List.iter ~f:print_transaction
 
 let command =
   Command.basic
