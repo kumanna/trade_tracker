@@ -1,6 +1,6 @@
 all: _build/default/bin/main.exe
 
-_build/default/bin/main.exe: bin/main.ml
+_build/default/bin/main.exe: bin/*.ml bin/*.mli
 	dune build bin/main.exe
 
 .PHONY: clean exec

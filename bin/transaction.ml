@@ -14,7 +14,7 @@ type t = {
   stt : float;
   stamp_duty : float;
   sebi_turnover_fees : float;
-  brokerage : float;
+  brokerage : float option;
 }
 
 let create_transaction
@@ -79,7 +79,9 @@ let print_transaction   {
       Float.to_string stt;
       Float.to_string stamp_duty;
       Float.to_string sebi_turnover_fees;
-      Float.to_string brokerage;
+      match brokerage with
+      | None -> "NOBROKERAGE"
+      | Some x -> Float.to_string x;
   ])
 
 let list_to_transaction l =
@@ -97,7 +99,8 @@ let list_to_transaction l =
     stt = List.nth_exn l 10 |> Float.of_string;
     stamp_duty = List.nth_exn l 11 |> Float.of_string;
     sebi_turnover_fees = List.nth_exn l 12 |> Float.of_string;
-    brokerage = List.nth_exn l 13 |> Float.of_string;
+    brokerage = let v = List.nth_exn l 13 in
+      if String.length v > 0 then Some (Float.of_string v) else None;
   }
 
 let get_order t
