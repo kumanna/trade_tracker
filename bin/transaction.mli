@@ -23,3 +23,5 @@ val list_to_transaction : string list -> t
 val get_order : t -> string
 
 val print_transaction : t -> unit
+
+val db_insert_transaction : Db_wrapper.t -> t -> bool

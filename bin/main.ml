@@ -1,15 +1,23 @@
 open Core
 open Transaction
 
-let process_file dbname f =
-  let db = Db_wrapper.open_database dbname in
+let process_file_with_db db f =
   let file = In_channel.create f in
-  In_channel.input_lines file
+  if (In_channel.input_lines file
   |> List.tl_exn
   |> List.map ~f:(String.split ~on:',')
   |> List.map ~f:list_to_transaction
-  |> List.iter ~f:print_transaction;
-  if Db_wrapper.close_database db then print_endline "Success!" else print_endline "Failure!"
+  |> List.map ~f:(db_insert_transaction db)
+  |> List.fold_right ~f:(fun x y -> x && y) ~init:true)
+  then
+    if Db_wrapper.close_database db then print_endline "Success!" else print_endline "Failure!"
+  else
+    print_endline "FAILURE DURING INSERT!"
+
+let process_file dbname f =
+  match Db_wrapper.open_database dbname with
+  | Some x -> process_file_with_db x f
+  | None -> print_endline "ERROR OPENING DATABASE!"
 
 let command =
   Command.basic

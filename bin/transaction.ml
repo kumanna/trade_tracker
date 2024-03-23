@@ -117,3 +117,58 @@ let list_to_transaction l =
 
 let get_order t
     = t.order
+
+let db_insert_transaction db t =
+  let query = Printf.sprintf "insert into raw_transaction_information \
+    (order_date, \
+    order_num, \
+    trade_num, \
+    trade_time, \
+    scrip, \
+    isin, \
+    buy_or_sell, \
+    quantity, \
+    peramount, \
+    exchange_fees, \
+    stt, \
+    stamp_duty, \
+    sebi_turnover_fees, \
+    brokerage, \
+    gst) \
+    values ( \
+    \"%s\", \
+    \"%s\", \
+    \"%s\", \
+    \"%s\", \
+    \"%s\", \
+    \"%s\", \
+    \"%s\", \
+    %f, \
+    %f, \
+    %f, \
+    %f, \
+    %f, \
+    %f, \
+    %s, \
+    %s);"
+      t.settlement_date
+      t.order
+      t.trade_num
+      t.trade_time
+      t.scrip
+      t.isin
+      t.buy_or_sell
+      t.quantity
+      t.peramount
+      t.exchange_fees
+      t.stt
+      t.stamp_duty
+      t.sebi_turnover_fees
+      (match t.brokerage with
+      | None -> "NULL"
+      | Some x -> Float.to_string x)
+      (match t.gst with
+      | None -> "NULL"
+      | Some x -> Float.to_string x)
+  in
+  Db_wrapper.run_query db query
