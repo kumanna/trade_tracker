@@ -1,5 +1,9 @@
 open Core
 
+type transaction_type =
+  | Buy
+  | Sell
+
 type t = {
   settlement_date : string;
   order : string;
@@ -7,7 +11,7 @@ type t = {
   trade_time : string;
   scrip : string;
   isin : string;
-  buy_or_sell : string;
+  buy_or_sell : transaction_type;
   quantity : float;
   peramount : float;
   exchange_fees : float;
@@ -76,7 +80,9 @@ let print_transaction   {
       trade_time;
       scrip;
       isin;
-      buy_or_sell;
+      (match buy_or_sell with
+      | Buy -> "B"
+      | Sell -> "S");
       Float.to_string quantity;
       Float.to_string peramount;
       Float.to_string exchange_fees;
@@ -92,28 +98,30 @@ let print_transaction   {
   ])
 
 let list_to_transaction l =
-  {
-    settlement_date = List.nth_exn l 0;
-    order = List.nth_exn l 1;
-    trade_num = List.nth_exn l 2;
-    trade_time = List.nth_exn l 3;
-    scrip = List.nth_exn l 4;
-    isin = List.nth_exn l 5;
-    buy_or_sell = (match (List.nth_exn l 6) with
-      | "buy" | "BUY" | "b" | "B" -> "B"
-      | "sell" | "SELL" | "s" | "S" -> "S"
-      | _ -> "");
-    quantity = List.nth_exn l 7 |> Float.of_string;
-    peramount = List.nth_exn l 8 |> Float.of_string;
-    exchange_fees = List.nth_exn l 9 |> Float.of_string;
-    stt = List.nth_exn l 10 |> Float.of_string;
-    stamp_duty = List.nth_exn l 11 |> Float.of_string;
-    sebi_turnover_fees = List.nth_exn l 12 |> Float.of_string;
-    brokerage = (let v = List.nth_exn l 13 in
-      if String.length v > 0 then Some (Float.of_string v) else None);
-    gst = (let v = List.nth_exn l 14 in
-      if String.length v > 0 then Some (Float.of_string v) else None);
-  }
+  let r =   {
+      settlement_date = List.nth_exn l 0;
+      order = List.nth_exn l 1;
+      trade_num = List.nth_exn l 2;
+      trade_time = List.nth_exn l 3;
+      scrip = List.nth_exn l 4;
+      isin = List.nth_exn l 5;
+      buy_or_sell = Buy;
+      quantity = List.nth_exn l 7 |> Float.of_string;
+      peramount = List.nth_exn l 8 |> Float.of_string;
+      exchange_fees = List.nth_exn l 9 |> Float.of_string;
+      stt = List.nth_exn l 10 |> Float.of_string;
+      stamp_duty = List.nth_exn l 11 |> Float.of_string;
+      sebi_turnover_fees = List.nth_exn l 12 |> Float.of_string;
+      brokerage = (let v = List.nth_exn l 13 in
+                   if String.length v > 0 then Some (Float.of_string v) else None);
+      gst = (let v = List.nth_exn l 14 in
+             if String.length v > 0 then Some (Float.of_string v) else None);
+    }
+  in
+  match (List.nth_exn l 6) with
+  | "buy" | "BUY" | "b" | "B" -> Some { r with buy_or_sell = Buy }
+  | "sell" | "SELL" | "s" | "S" -> Some { r with buy_or_sell = Sell }
+  | _ -> None
 
 let get_order t
     = t.order
@@ -157,7 +165,9 @@ let db_insert_transaction db t =
       t.trade_time
       t.scrip
       t.isin
-      t.buy_or_sell
+      (match t.buy_or_sell with
+       | Sell -> "S"
+       | Buy -> "B")
       t.quantity
       t.peramount
       t.exchange_fees

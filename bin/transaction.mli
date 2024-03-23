@@ -1,5 +1,7 @@
 type t
 
+type transaction_type
+
 val create_transaction :
   string -> (* settlement_date *)
   string -> (* order *)
@@ -7,7 +9,7 @@ val create_transaction :
   string -> (* trade_time *)
   string -> (* scrip *)
   string -> (* isin *)
-  string -> (* buy_or_sell *)
+  transaction_type -> (* buy_or_sell *)
   float -> (* quantity *)
   float -> (* peramount *)
   float -> (* exchange_fees *)
@@ -18,7 +20,7 @@ val create_transaction :
   float option -> (* gst *)
   t
 
-val list_to_transaction : string list -> t
+val list_to_transaction : string list -> t option
 
 val get_order : t -> string
 

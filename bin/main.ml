@@ -6,7 +6,7 @@ let process_file_with_db db f =
   if (In_channel.input_lines file
   |> List.tl_exn
   |> List.map ~f:(String.split ~on:',')
-  |> List.map ~f:list_to_transaction
+  |> List.filter_map ~f:list_to_transaction
   |> List.map ~f:(db_insert_transaction db)
   |> List.fold_right ~f:(fun x y -> x && y) ~init:true)
   then
