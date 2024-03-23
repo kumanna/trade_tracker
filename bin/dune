@@ -1,5 +1,5 @@
-(executable
- (public_name trade_tracker)
+(executables
+ (public_names trade_tracker populate_brokerage)
  (libraries core core_unix.command_unix sqlite3)
  (preprocess (pps ppx_jane))
- (name main))
+ (names main populate_brokerage))
