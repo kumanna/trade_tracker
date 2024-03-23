@@ -36,3 +36,8 @@ let run_query db query =
   match Sqlite3.exec db query with
   | Sqlite3.Rc.OK -> true
   | _ -> false
+
+let run_query_callback db ~cb query =
+  match Sqlite3.exec_no_headers db ~cb:cb query with
+  | Sqlite3.Rc.OK -> true
+  | _ -> false
