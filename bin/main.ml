@@ -2,14 +2,14 @@ open Core
 open Transaction
 
 let process_file dbname f =
-  let db = Sqlite3.db_open dbname in
+  let db = Db_wrapper.open_database dbname in
   let file = In_channel.create f in
   In_channel.input_lines file
   |> List.tl_exn
   |> List.map ~f:(String.split ~on:',')
   |> List.map ~f:list_to_transaction
   |> List.iter ~f:print_transaction;
-  if Sqlite3.db_close db then print_endline "Success!" else print_endline "Failure!"
+  if Db_wrapper.close_database db then print_endline "Success!" else print_endline "Failure!"
 
 let command =
   Command.basic
