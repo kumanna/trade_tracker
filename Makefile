@@ -23,3 +23,4 @@ test: input.csv
 	$(RM) stockdata.db
 	dune exec bin/main.exe stockdata.db input.csv
 	dune exec bin/populate_brokerage.exe stockdata.db 0.1 20 18
+	dune exec bin/update_holdings.exe stockdata.db
