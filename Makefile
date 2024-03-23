@@ -11,9 +11,11 @@ _build/default/bin/main.exe: bin/main.ml $(COMMON_DEPS)
 _build/default/bin/populate_brokerage.exe: bin/populate_brokerage.ml $(COMMON_DEPS)
 	dune build bin/populate_brokerage.exe
 
-.PHONY: clean exec
+.PHONY: clean exec test
 clean:
 	dune clean
 
-exec: _build/default/bin/main.exe
-	dune exec bin/main.exe
+test: input.csv
+	$(RM) stockdata.db
+	dune exec bin/main.exe stockdata.db input.csv
+	dune exec bin/populate_brokerage.exe stockdata.db 0.1 20 18
