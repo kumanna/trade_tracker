@@ -99,7 +99,10 @@ let list_to_transaction l =
     trade_time = List.nth_exn l 3;
     scrip = List.nth_exn l 4;
     isin = List.nth_exn l 5;
-    buy_or_sell = List.nth_exn l 6;
+    buy_or_sell = (match (List.nth_exn l 6) with
+      | "buy" | "BUY" | "b" | "B" -> "B"
+      | "sell" | "SELL" | "s" | "S" -> "S"
+      | _ -> "");
     quantity = List.nth_exn l 7 |> Float.of_string;
     peramount = List.nth_exn l 8 |> Float.of_string;
     exchange_fees = List.nth_exn l 9 |> Float.of_string;
