@@ -12,7 +12,7 @@ let process_file_with_db db f =
   then
     if Db_wrapper.close_database db then print_endline "Success!" else print_endline "Failure!"
   else
-    print_endline "FAILURE DURING INSERT!"
+    print_endline "FAILURE DURING INSERT: have you already imported these transactions?"
 
 let process_file dbname f =
   match Db_wrapper.open_database dbname with
