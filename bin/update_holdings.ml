@@ -1,9 +1,14 @@
 open Core
 
+let handle_buy_and_sell entry =
+  match entry with
+  | [|Some id;Some quantity;Some buy_or_sell|] -> print_endline (id ^ "," ^ quantity ^ "," ^ buy_or_sell)
+  | _ -> print_endline "ERROR GENERATING HOLDINGS!"
+
 let get_pending_holdings db =
   let rows = ref [] in
   if Db_wrapper.run_query_callback db ~cb:(fun x -> rows := x::!rows) "select id, quantity, buy_or_sell from raw_transaction_information where id not in (select distinct lot_id from current_holdings union select sale_id from sale_data) order by order_date, id desc" then
-    List.iter ~f:(fun x -> print_endline (Option.value x.(0) ~default:"ERROR")) !rows
+    List.iter ~f:(fun x -> handle_buy_and_sell x) !rows
   else
     print_endline "ERROR"
 
