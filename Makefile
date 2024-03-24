@@ -12,7 +12,7 @@ _build/default/bin/main.exe: bin/main.ml $(COMMON_DEPS)
 _build/default/bin/populate_brokerage.exe: bin/populate_brokerage.ml $(COMMON_DEPS)
 	dune build bin/populate_brokerage.exe
 
-_build/default/bin/update_holdings.exe: bin/populate_brokerage.ml $(COMMON_DEPS)
+_build/default/bin/update_holdings.exe: bin/update_holdings.ml $(COMMON_DEPS)
 	dune build bin/update_holdings.exe
 
 .PHONY: clean exec test
