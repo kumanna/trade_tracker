@@ -109,8 +109,16 @@ let list_to_transaction l =
       quantity = List.nth_exn l 7 |> Float.of_string;
       peramount = List.nth_exn l 8 |> Float.of_string;
       exchange_fees = List.nth_exn l 9 |> Float.of_string;
-      stt = List.nth_exn l 10 |> Float.of_string;
-      stamp_duty = List.nth_exn l 11 |> Float.of_string;
+      stt = (let x = (List.nth_exn l 10) in
+             if String.length x > 0 then
+               Float.of_string x
+             else
+               0.0);
+      stamp_duty = (let x = (List.nth_exn l 10) in
+             if String.length x > 0 then
+               Float.of_string x
+             else
+               0.0);
       sebi_turnover_fees = List.nth_exn l 12 |> Float.of_string;
       brokerage = (let v = List.nth_exn l 13 in
                    if String.length v > 0 then Some (Float.of_string v) else None);
