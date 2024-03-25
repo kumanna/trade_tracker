@@ -5,9 +5,11 @@ let rec handle_sell db sale_id n_quantity_to_sell =
     ()
   else
     let rows = ref [] in
+    (* First get the ISIN code for this stock *)
     if Db_wrapper.run_query_callback db ~cb:(fun x -> rows := x::!rows) ("select isin from raw_transaction_information where id = " ^ sale_id ^ " limit 1;") then
       let isin = (List.hd_exn !rows).(0) |> Option.value ~default:"" in
       let buyrows = ref [] in
+      (* Find current holding lots of this stock *)
       if Db_wrapper.run_query_callback db ~cb:(fun x -> buyrows := x::!buyrows) ("select lot_id, n_stocks from current_holdings join raw_transaction_information on raw_transaction_information.id = lot_id where isin = '" ^ isin ^ "' order by id desc;")
       then
         match List.hd_exn !buyrows with
@@ -17,7 +19,7 @@ let rec handle_sell db sale_id n_quantity_to_sell =
              if Db_wrapper.run_query db (Printf.sprintf "insert into sale_data (sale_id, buy_id, n_stocks) values (%s, %s, %f)" sale_id buy_id n_quantity_to_sell) && (Db_wrapper.run_query db (Printf.sprintf "update current_holdings set n_stocks = %f where lot_id = %s;" (quantity -. n_quantity_to_sell) buy_id)) then
                print_endline ("Imported sale transaction for " ^ sale_id ^ " with " ^ buy_id ^  "!")
              else
-               print_endline ("Error importing sale transaction for " ^ sale_id ^ "!")
+               print_endline ("Error importing sale transaction for " ^ sale_id ^ " (" ^ isin ^ ")!")
            else
              if Db_wrapper.run_query db (Printf.sprintf "insert into sale_data (sale_id, buy_id, n_stocks) values (%s, %s, %f)" sale_id buy_id quantity) && Db_wrapper.run_query db ("delete from current_holdings where lot_id = " ^ buy_id ^ ";") then
                print_endline ("Imported sale transaction for " ^ sale_id ^ " with " ^ buy_id ^ "!");
