@@ -21,9 +21,15 @@ let process_file_with_db db =
              | [[|Some sale_price|]; [|Some buy_price|]] ->
                 (let rows3 = ref [] in
                  if Db_wrapper.run_query_callback db ~cb:(fun x -> rows3 := x::!rows3) (Printf.sprintf "select (exchange_fees + stamp_duty + sebi_turnover_fees + brokerage + gst) / quantity from raw_transaction_information where id in (%s, %s);" sale_id buy_id) then
-                   match !rows3 with
-                   | [[|Some sell_cost|]; [|Some buy_cost|]] -> print_endline (sale_id ^ "," ^ buy_id ^  "," ^ sale_price ^ "," ^ buy_price ^ "," ^ n_stocks ^ "," ^ sell_cost ^ "," ^ buy_cost ^ "," ^ (List.length !rows3 |> Int.to_string))
-                   | _ -> print_endline ("Error 4 getting charges for sale and buy transactions " ^ sale_id ^ " and " ^ buy_id ^ ".")
+                   let total_cost_per_stock =
+                     match !rows3 with
+                     | [[|Some sell_cost|]; [|Some buy_cost|]] -> (Float.of_string sell_cost) +. (Float.of_string buy_cost)
+                     | _ -> 0.0
+                   in
+                   print_endline (sale_id ^ " and " ^ buy_id ^ ": " ^ n_stocks ^ "," ^ buy_price ^ "," ^ sale_price ^ "," ^ (Float.to_string (total_cost_per_stock *. (Float.of_string n_stocks))))
+                   (* match !rows3 with *)
+                   (* | [[|Some sell_cost|]; [|Some buy_cost|]] -> print_endline (sale_id ^ "," ^ buy_id ^  "," ^ sale_price ^ "," ^ buy_price ^ "," ^ n_stocks ^ "," ^ sell_cost ^ "," ^ buy_cost ^ "," ^ (List.length !rows3 |> Int.to_string)) *)
+                   (* | _ -> print_endline ("Error 4 getting charges for sale and buy transactions " ^ sale_id ^ " and " ^ buy_id ^ ".") *)
                  else
                   print_endline ("Error 2 getting charges for sale and buy transactions " ^ sale_id ^ " and " ^ buy_id ^ "."))
              | _ -> print_endline ("Error 3 getting charges for sale and buy transactions " ^ sale_id ^ " and " ^ buy_id ^ ".")
