@@ -1,5 +1,5 @@
 (executables
- (public_names trade_tracker populate_brokerage update_holdings)
+ (public_names trade_tracker populate_brokerage update_holdings capgain_report)
  (libraries core core_unix.command_unix sqlite3)
  (preprocess (pps ppx_jane))
- (names main populate_brokerage update_holdings))
+ (names main populate_brokerage update_holdings capgain_report))
