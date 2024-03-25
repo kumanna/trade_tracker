@@ -15,15 +15,15 @@ let process_file_with_db db =
     List.iter ~f:(fun x ->
         match x with
         | [|Some sale_id; Some buy_id; Some n_stocks |] ->
-           let rows = ref [] in
-           if Db_wrapper.run_query_callback db ~cb:(fun x -> rows := x::!rows) (Printf.sprintf "select peramount from raw_transaction_information where id in (%s, %s)" sale_id buy_id) then
-             match !rows with
+           let rows2 = ref [] in
+           if Db_wrapper.run_query_callback db ~cb:(fun x -> rows2 := x::!rows2) (Printf.sprintf "select peramount from raw_transaction_information where id in (%s, %s)" sale_id buy_id) then
+             match !rows2 with
              | [[|Some sale_price|]; [|Some buy_price|]] ->
-                (if Db_wrapper.run_query_callback db ~cb:(fun x -> rows := x::!rows) (Printf.sprintf "select (exchange_fees + stamp_duty + sebi_turnover_fees + brokerage + gst) / quantity from raw_transaction_information where id in (%s, %s)" sale_id buy_id) then
-                  List.iter ~f:(fun x ->
-                      match x with
-                      | [|Some p|] -> print_endline (p ^ "," ^ sale_price ^ "," ^ buy_price ^ "," ^ n_stocks)
-                      | _ -> print_endline ("Error 1 getting charges for sale and buy transactions " ^ sale_id ^ " and " ^ buy_id ^ ".")) !rows
+                (let rows3 = ref [] in
+                 if Db_wrapper.run_query_callback db ~cb:(fun x -> rows3 := x::!rows3) (Printf.sprintf "select (exchange_fees + stamp_duty + sebi_turnover_fees + brokerage + gst) / quantity from raw_transaction_information where id in (%s, %s);" sale_id buy_id) then
+                   match !rows3 with
+                   | [[|Some sell_cost|]; [|Some buy_cost|]] -> print_endline (sale_id ^ "," ^ buy_id ^  "," ^ sale_price ^ "," ^ buy_price ^ "," ^ n_stocks ^ "," ^ sell_cost ^ "," ^ buy_cost ^ "," ^ (List.length !rows3 |> Int.to_string))
+                   | _ -> print_endline ("Error 4 getting charges for sale and buy transactions " ^ sale_id ^ " and " ^ buy_id ^ ".")
                  else
                   print_endline ("Error 2 getting charges for sale and buy transactions " ^ sale_id ^ " and " ^ buy_id ^ "."))
              | _ -> print_endline ("Error 3 getting charges for sale and buy transactions " ^ sale_id ^ " and " ^ buy_id ^ ".")

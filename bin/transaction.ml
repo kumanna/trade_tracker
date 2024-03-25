@@ -114,7 +114,7 @@ let list_to_transaction l =
                Float.of_string x
              else
                0.0);
-      stamp_duty = (let x = (List.nth_exn l 10) in
+      stamp_duty = (let x = (List.nth_exn l 11) in
              if String.length x > 0 then
                Float.of_string x
              else
