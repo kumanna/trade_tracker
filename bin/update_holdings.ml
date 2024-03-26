@@ -17,12 +17,11 @@ let rec handle_sell db sale_id n_quantity_to_sell =
            let quantity = Float.of_string quantity in
            if Float.(quantity > n_quantity_to_sell) then
              if Db_wrapper.run_query db (Printf.sprintf "insert into sale_data (sale_id, buy_id, n_stocks) values (%s, %s, %f)" sale_id buy_id n_quantity_to_sell) && (Db_wrapper.run_query db (Printf.sprintf "update current_holdings set n_stocks = %f where lot_id = %s;" (quantity -. n_quantity_to_sell) buy_id)) then
-               print_endline ("Imported sale transaction for " ^ sale_id ^ " with " ^ buy_id ^  "!")
+               ()
              else
                print_endline ("Error importing sale transaction for " ^ sale_id ^ " (" ^ isin ^ ")!")
            else
              if Db_wrapper.run_query db (Printf.sprintf "insert into sale_data (sale_id, buy_id, n_stocks) values (%s, %s, %f)" sale_id buy_id quantity) && Db_wrapper.run_query db ("delete from current_holdings where lot_id = " ^ buy_id ^ ";") then
-               print_endline ("Imported sale transaction for " ^ sale_id ^ " with " ^ buy_id ^ "!");
                handle_sell db sale_id (n_quantity_to_sell -. quantity)
         | _ -> print_endline ("Failure in sale transaction " ^ sale_id ^ "!")
       else
