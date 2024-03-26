@@ -28,3 +28,4 @@ test: input.csv
 	dune exec bin/populate_brokerage.exe stockdata.db 0.1 20 18
 	dune exec bin/update_holdings.exe stockdata.db
 	dune exec bin/capgain_report.exe stockdata.db
+	dune exec bin/capgain_report.exe stockdata.db 2023
