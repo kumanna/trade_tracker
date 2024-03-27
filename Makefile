@@ -18,14 +18,17 @@ _build/default/bin/update_holdings.exe: bin/update_holdings.ml $(COMMON_DEPS)
 _build/default/bin/capgain_report.exe: bin/capgain_report.ml $(COMMON_DEPS)
 	dune build bin/capgain_report.exe
 
-.PHONY: clean exec test
+.PHONY: clean exec examplerun
 clean:
 	dune clean
 
-test: input.csv
-	$(RM) stockdata.db
-	dune exec bin/main.exe stockdata.db input.csv
-	dune exec bin/populate_brokerage.exe stockdata.db 0.1 20 18
-	dune exec bin/update_holdings.exe stockdata.db
-	dune exec bin/capgain_report.exe stockdata.db
-	dune exec bin/capgain_report.exe stockdata.db 2023
+examplerun: example2.csv.txt example.csv.txt
+	$(RM) example.db
+	dune exec bin/main.exe example.db example.csv.txt
+	dune exec bin/populate_brokerage.exe example.db 0.1 20 18
+	dune exec bin/update_holdings.exe example.db
+	dune exec bin/main.exe example.db example2.csv.txt
+	dune exec bin/populate_brokerage.exe example.db 0.1 20 18
+	dune exec bin/update_holdings.exe example.db
+	dune exec bin/capgain_report.exe example.db
+	dune exec bin/capgain_report.exe example.db 2023
