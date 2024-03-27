@@ -1,3 +1,13 @@
+(* Copyright 2024 Kumar Appaiah *)
+
+(* This file is part of trade_tracker. *)
+
+(* Foobar is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. *)
+
+(* Foobar is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. *)
+
+(* You should have received a copy of the GNU General Public License along with Foobar. If not, see <https://www.gnu.org/licenses/>.  *)
+
 open Core
 
 let query_stcg = "select S.scrip, B.order_date, S.order_date,sum(n_stocks * S.peramount) as total_value, sum(n_stocks * (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join raw_transaction_information as S on S.id = sale_id join raw_transaction_information as B on B.id = buy_id where julianday(S.order_date) - julianday(B.order_date) < 365 group by S.scrip"
