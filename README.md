@@ -67,6 +67,22 @@ Charges: 5.8276
 
 dune exec bin/capgain_report.exe example.db 2023
 
+    STCG REPORT
+    Scrip: STOCKA
+    Buy date: 2022-04-05
+    Sell date: 2023-04-01
+    Total value: 195.0
+    Gain: 63.6
+    Charges: 10.6864
+
+    LTCG REPORT
+    Scrip: STOCKA
+    Buy date: 2022-04-05
+    Sell date: 2023-08-08
+    Total value: 76.96
+    Gain: 27.6
+    Charges: 5.8276
+
     STCG REPORT for 2023-2024
     Q1 total value of consideration: 110.04
     Q1 gain: 36.0
