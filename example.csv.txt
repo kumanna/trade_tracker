@@ -1,0 +1,4 @@
+settlement_date,order_num,trade_num,trade_time,scrip,isin,buy_or_sell,quantity,peramount,exchange_fees,stt,stamp_duty,sebi_turnover_fees,brokerage,gst
+2022-04-05,1001,1,10:00:00,STOCKA,INEXXXXXXXXA,B,10.0,12.34,1.02,0.25,0.01,0.93,1.234,0.10
+2023-01-06,1002,2,10:00:00,STOCKA,INEXXXXXXXXA,B,20.0,14.34,1.14,0.35,0.02,1.72,1.45,0.20
+2022-04-06,1003,3,11:00:00,STOCKB,INEXXXXXXXXB,B,200.0,140.2,2.14,0.67,0.06,1.79,1.44,0.4
