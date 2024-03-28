@@ -10,6 +10,12 @@ for tax filing purposes in India.
 This software has absolutely no warranty and I cannot vouch for its
 correctness. Use at your own risk.
 
+# Building
+The software is written in [OCaml](https://ocaml.org/). You need to
+have the `dune` build tool and the `sqlite3`, `core` and `core_unix`
+libraries that can be installed using the
+[opam](https://opam.ocaml.org/) tool.
+
 # Usage
 The program needs CSV inputs that contain the following headers:
 
