@@ -37,9 +37,9 @@ let create_db_query = "CREATE TABLE IF NOT EXISTS raw_transaction_information \
     UNIQUE(order_date, order_num, scrip, trade_num) \
     );"
 
-let open_database filename =
+let open_database ?(readonly = false) filename =
   let query = create_db_query in
-  let db = Sqlite3.db_open filename in
+  let db = (if readonly then Sqlite3.(db_open ~mode:`READONLY filename) else Sqlite3.db_open filename) in
   match Sqlite3.exec db query with
   | Sqlite3.Rc.OK -> Some db
   | _ -> None

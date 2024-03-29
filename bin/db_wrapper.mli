@@ -17,7 +17,7 @@
 
 type t
 
-val open_database : string -> t option
+val open_database : ?readonly:bool -> string -> t option
 
 val close_database : t -> bool
 

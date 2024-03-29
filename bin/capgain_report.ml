@@ -81,7 +81,7 @@ let process_file_with_db db query =
 
 let process_file dbname year =
   match year with
-  | None ->  (match Db_wrapper.open_database dbname with
+  | None ->  (match Db_wrapper.open_database dbname ~readonly:true with
               | Some x -> (print_endline "STCG REPORT";
                            process_file_with_db x query_stcg;
                            print_endline "LTCG REPORT";
