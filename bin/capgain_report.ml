@@ -49,7 +49,7 @@ let generate_yearwise_capgains_helper db year quarter query =
      let query = Str.(global_replace (regexp "NEWYEAR") newyear query) in
      if Db_wrapper.run_query_callback db ~cb:(fun x -> rows := x::!rows) query then
        match !rows with
-       | [[|Some total_value; Some gain;Some charges|]] -> print_endline (Printf.sprintf "%s total value of consideration: %s\n%s gain: %s\n%s charges: %s\n%s net: %f\n" quarter total_value quarter gain quarter charges quarter Float.((of_string gain) -. (of_string charges)))
+       | [[|Some total_value; Some gain;Some charges|]] -> print_endline (Printf.sprintf "%s total value of consideration: %s\nBuy price: %f\n%s gain: %s\n%s charges: %s\n%s net: %f\n" quarter total_value Float.((of_string total_value) -. (of_string gain)) quarter gain quarter charges quarter Float.((of_string gain) -. (of_string charges)))
        | _ -> print_endline (quarter ^ ": No transactions\n")
      else
        print_endline ("Error getting " ^ quarter ^ " transactions!\n")
