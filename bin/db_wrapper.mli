@@ -13,14 +13,11 @@
    General Public License for more details. *)
 
 (* You should have received a copy of the GNU General Public License
-   along with Foobar. If not, see <https://www.gnu.org/licenses/>.  *)
+   along with Foobar. If not, see <https://www.gnu.org/licenses/>. *)
 
 type t
 
 val open_database : ?readonly:bool -> string -> t option
-
 val close_database : t -> bool
-
 val run_query : t -> string -> bool
-
 val run_query_callback : t -> cb:(string option array -> unit) -> string -> bool

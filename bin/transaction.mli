@@ -13,34 +13,45 @@
    General Public License for more details. *)
 
 (* You should have received a copy of the GNU General Public License
-   along with Foobar. If not, see <https://www.gnu.org/licenses/>.  *)
+   along with Foobar. If not, see <https://www.gnu.org/licenses/>. *)
 
 type t
-
 type transaction_type
 
 val create_transaction :
-  string -> (* settlement_date *)
-  string -> (* order *)
-  string -> (* trade_num *)
-  string -> (* trade_time *)
-  string -> (* scrip *)
-  string -> (* isin *)
-  transaction_type -> (* buy_or_sell *)
-  float -> (* quantity *)
-  float -> (* peramount *)
-  float -> (* exchange_fees *)
-  float -> (* stt *)
-  float -> (* stamp_duty *)
-  float -> (* sebi_turnover_fees *)
-  float option -> (* brokerage *)
-  float option -> (* gst *)
+  string ->
+  (* settlement_date *)
+  string ->
+  (* order *)
+  string ->
+  (* trade_num *)
+  string ->
+  (* trade_time *)
+  string ->
+  (* scrip *)
+  string ->
+  (* isin *)
+  transaction_type ->
+  (* buy_or_sell *)
+  float ->
+  (* quantity *)
+  float ->
+  (* peramount *)
+  float ->
+  (* exchange_fees *)
+  float ->
+  (* stt *)
+  float ->
+  (* stamp_duty *)
+  float ->
+  (* sebi_turnover_fees *)
+  float option ->
+  (* brokerage *)
+  float option ->
+  (* gst *)
   t
 
 val list_to_transaction : string list -> t option
-
 val get_order : t -> string
-
 val print_transaction : t -> unit
-
 val db_insert_transaction : Db_wrapper.t -> t -> bool
