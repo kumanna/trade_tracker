@@ -19,17 +19,19 @@ open Core
 open Transaction
 
 let process_file_with_db db f =
-  let file = In_channel.create f in
-  if (In_channel.input_lines file
-  |> List.tl_exn
-  |> List.map ~f:(String.split ~on:',')
-  |> List.filter_map ~f:list_to_transaction
-  |> List.map ~f:(db_insert_transaction db)
-  |> List.fold_right ~f:(fun x y -> x && y) ~init:true)
-  then
-    if Db_wrapper.close_database db then print_endline "Success!" else print_endline "Failure!"
-  else
-    print_endline "FAILURE DURING INSERT: have you already imported these transactions?"
+  if Db_wrapper.run_query db "begin transaction" then
+    let file = In_channel.create f in
+    if (In_channel.input_lines file
+        |> List.tl_exn
+        |> List.map ~f:(String.split ~on:',')
+        |> List.filter_map ~f:list_to_transaction
+        |> List.map ~f:(db_insert_transaction db)
+        |> List.fold_right ~f:(fun x y -> x && y) ~init:true)
+    then
+      if (Db_wrapper.run_query db "end transaction" &&
+         Db_wrapper.close_database db) then print_endline "Success!" else print_endline "Failure!"
+    else
+      print_endline "FAILURE DURING INSERT: have you already imported these transactions?"
 
 let process_file dbname f =
   match Db_wrapper.open_database dbname with
