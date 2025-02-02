@@ -43,7 +43,7 @@ let query_ltcg_onlystocks =
    S.scrip not in (" ^ special_scrip_list ^ ") and \
    julianday(S.order_date) - julianday(B.order_date) >= 365 group by S.scrip"
 
-let query_stcg_q1_onlystocks =
+let query_stcg_base =
   "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
    (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
    B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
@@ -52,63 +52,29 @@ let query_stcg_q1_onlystocks =
    raw_transaction_information as S on S.id = sale_id join \
    raw_transaction_information as B on B.id = buy_id where \
    S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 and \
-   julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
+   julianday(S.order_date) - julianday(B.order_date) < 365 and "
+
+let query_stcg_q1_onlystocks =
+  query_stcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
    julianday(S.order_date) < julianday('OLDYEAR-07-01')"
 
 let query_stcg_q2_onlystocks =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 and \
-   julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
+  query_stcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
    julianday(S.order_date) < julianday('OLDYEAR-10-01')"
 
 let query_stcg_q3_onlystocks =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 and \
-   julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
+  query_stcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
    julianday(S.order_date) < julianday('NEWYEAR-01-01')"
 
 let query_stcg_q4_onlystocks =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 and \
-   julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
+  query_stcg_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
    julianday(S.order_date) < julianday('NEWYEAR-03-16')"
 
 let query_stcg_q5_onlystocks =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 and \
-   julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
+  query_stcg_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
    julianday(S.order_date) < julianday('NEWYEAR-04-01')"
 
-let query_ltcg_q1_onlystocks =
+let query_ltcg_base =
   "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
    (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
    B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
@@ -117,60 +83,26 @@ let query_ltcg_q1_onlystocks =
    raw_transaction_information as S on S.id = sale_id join \
    raw_transaction_information as B on B.id = buy_id where \
    S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 and \
-   julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
+   julianday(S.order_date) - julianday(B.order_date) >= 365 and "
+
+let query_ltcg_q1_onlystocks =
+   query_ltcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
    julianday(S.order_date) < julianday('OLDYEAR-07-01')"
 
 let query_ltcg_q2_onlystocks =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 and \
-   julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
+   query_ltcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
    julianday(S.order_date) < julianday('OLDYEAR-10-01')"
 
 let query_ltcg_q3_onlystocks =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 and \
-   julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
+  query_ltcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
    julianday(S.order_date) < julianday('NEWYEAR-01-01')"
 
 let query_ltcg_q4_onlystocks =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 and \
-   julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
+  query_ltcg_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
    julianday(S.order_date) < julianday('NEWYEAR-03-16')"
 
 let query_ltcg_q5_onlystocks =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 and \
-   julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
+  query_ltcg_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
    julianday(S.order_date) < julianday('NEWYEAR-04-01')"
 
 let query_stcg_onlyspecial =
@@ -195,8 +127,8 @@ let query_ltcg_onlyspecial =
    S.scrip in (" ^ special_scrip_list ^ ") and \
    julianday(S.order_date) - julianday(B.order_date) >= 365 group by S.scrip"
 
-let query_stcg_q1_onlyspecial =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
+let query_stcg_onlyspecial_base =
+    "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
    (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
    B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
    n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
@@ -204,63 +136,29 @@ let query_stcg_q1_onlyspecial =
    raw_transaction_information as S on S.id = sale_id join \
    raw_transaction_information as B on B.id = buy_id where \
    S.scrip in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 and \
-   julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
+   julianday(S.order_date) - julianday(B.order_date) < 365 and "
+
+let query_stcg_q1_onlyspecial =
+  query_stcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
    julianday(S.order_date) < julianday('OLDYEAR-07-01')"
 
 let query_stcg_q2_onlyspecial =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 and \
-   julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
+  query_stcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
    julianday(S.order_date) < julianday('OLDYEAR-10-01')"
 
 let query_stcg_q3_onlyspecial =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 and \
-   julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
+  query_stcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
    julianday(S.order_date) < julianday('NEWYEAR-01-01')"
 
 let query_stcg_q4_onlyspecial =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 and \
-   julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
+  query_stcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
    julianday(S.order_date) < julianday('NEWYEAR-03-16')"
 
 let query_stcg_q5_onlyspecial =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 and \
-   julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
+  query_stcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
    julianday(S.order_date) < julianday('NEWYEAR-04-01')"
 
-let query_ltcg_q1_onlyspecial =
+let query_ltcg_onlyspecial_base =
   "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
    (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
    B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
@@ -269,60 +167,26 @@ let query_ltcg_q1_onlyspecial =
    raw_transaction_information as S on S.id = sale_id join \
    raw_transaction_information as B on B.id = buy_id where \
    S.scrip in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 and \
-   julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
+   julianday(S.order_date) - julianday(B.order_date) >= 365 and "
+
+let query_ltcg_q1_onlyspecial =
+  query_ltcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
    julianday(S.order_date) < julianday('OLDYEAR-07-01')"
 
 let query_ltcg_q2_onlyspecial =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 and \
-   julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
+  query_ltcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
    julianday(S.order_date) < julianday('OLDYEAR-10-01')"
 
 let query_ltcg_q3_onlyspecial =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 and \
-   julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
+  query_ltcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
    julianday(S.order_date) < julianday('NEWYEAR-01-01')"
 
 let query_ltcg_q4_onlyspecial =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 and \
-   julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
+  query_ltcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
    julianday(S.order_date) < julianday('NEWYEAR-03-16')"
 
 let query_ltcg_q5_onlyspecial =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 and \
-   julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
+  query_ltcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
    julianday(S.order_date) < julianday('NEWYEAR-04-01')"
 
 let generate_yearwise_capgains_helper db year quarter query =
