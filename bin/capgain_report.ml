@@ -30,7 +30,7 @@ let query_onlystocks_base opstr =
    total_charges from sale_data join raw_transaction_information as S on S.id \
    = sale_id join raw_transaction_information as B on B.id = buy_id where \
    S.scrip not in (" ^ special_scrip_list ^ ") and \
-                                             julianday(S.order_date) - julianday(B.order_date) " ^ opstr ^ " 365 group by S.scrip"
+   julianday(S.order_date) - julianday(B.order_date) " ^ opstr ^ " 365 group by S.scrip"
 
 let query_ltcg_onlystocks =
   query_onlystocks_base ">="
@@ -47,7 +47,7 @@ let query_base opstr =
    raw_transaction_information as S on S.id = sale_id join \
    raw_transaction_information as B on B.id = buy_id where \
    S.scrip not in (" ^ special_scrip_list ^ ") and \
-                                             julianday(S.order_date) - julianday(B.order_date) " ^ opstr ^ " 365 and "
+   julianday(S.order_date) - julianday(B.order_date) " ^ opstr ^ " 365 and "
 
 let query_stcg_base =
   query_base "<"
