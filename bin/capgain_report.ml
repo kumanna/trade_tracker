@@ -125,48 +125,59 @@ let query_onlyspecial_base opstr =
 
 let query_stcg_onlyspecial_base =
   query_onlyspecial_base "<"
+
 let query_stcg_q1_onlyspecial =
-  query_stcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
-                                 julianday(S.order_date) < julianday('OLDYEAR-07-01')"
+  query_stcg_onlyspecial_base ^
+  "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
+   julianday(S.order_date) < julianday('OLDYEAR-07-01')"
 
 let query_stcg_q2_onlyspecial =
-  query_stcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
-                                 julianday(S.order_date) < julianday('OLDYEAR-10-01')"
+  query_stcg_onlyspecial_base ^
+  "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
+   julianday(S.order_date) < julianday('OLDYEAR-10-01')"
 
 let query_stcg_q3_onlyspecial =
-  query_stcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
-                                 julianday(S.order_date) < julianday('NEWYEAR-01-01')"
+  query_stcg_onlyspecial_base ^
+  "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
+   julianday(S.order_date) < julianday('NEWYEAR-01-01')"
 
 let query_stcg_q4_onlyspecial =
-  query_stcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
-                                 julianday(S.order_date) < julianday('NEWYEAR-03-16')"
+  query_stcg_onlyspecial_base ^
+  "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
+   julianday(S.order_date) < julianday('NEWYEAR-03-16')"
 
 let query_stcg_q5_onlyspecial =
-  query_stcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
-                                 julianday(S.order_date) < julianday('NEWYEAR-04-01')"
+  query_stcg_onlyspecial_base ^
+  "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
+   julianday(S.order_date) < julianday('NEWYEAR-04-01')"
 
 let query_ltcg_onlyspecial_base =
   query_onlyspecial_base ">="
 
 let query_ltcg_q1_onlyspecial =
-  query_ltcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
-                                 julianday(S.order_date) < julianday('OLDYEAR-07-01')"
+  query_ltcg_onlyspecial_base ^
+  "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
+   julianday(S.order_date) < julianday('OLDYEAR-07-01')"
 
 let query_ltcg_q2_onlyspecial =
-  query_ltcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
-                                 julianday(S.order_date) < julianday('OLDYEAR-10-01')"
+  query_ltcg_onlyspecial_base ^
+  "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
+   julianday(S.order_date) < julianday('OLDYEAR-10-01')"
 
 let query_ltcg_q3_onlyspecial =
-  query_ltcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
-                                 julianday(S.order_date) < julianday('NEWYEAR-01-01')"
+  query_ltcg_onlyspecial_base ^
+  "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
+   julianday(S.order_date) < julianday('NEWYEAR-01-01')"
 
 let query_ltcg_q4_onlyspecial =
-  query_ltcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
-                                 julianday(S.order_date) < julianday('NEWYEAR-03-16')"
+  query_ltcg_onlyspecial_base ^
+  "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
+   julianday(S.order_date) < julianday('NEWYEAR-03-16')"
 
 let query_ltcg_q5_onlyspecial =
-  query_ltcg_onlyspecial_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
-                                 julianday(S.order_date) < julianday('NEWYEAR-04-01')"
+  query_ltcg_onlyspecial_base ^
+  "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
+   julianday(S.order_date) < julianday('NEWYEAR-04-01')"
 
 let generate_yearwise_capgains_helper db year quarter query =
   let rows = ref [] in
