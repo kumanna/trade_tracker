@@ -53,47 +53,57 @@ let query_stcg_base =
   query_base "<"
 
 let query_stcg_q1_onlystocks =
-  query_stcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
-                     julianday(S.order_date) < julianday('OLDYEAR-07-01')"
+  query_stcg_base ^
+  "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
+   julianday(S.order_date) < julianday('OLDYEAR-07-01')"
 
 let query_stcg_q2_onlystocks =
-  query_stcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
-                     julianday(S.order_date) < julianday('OLDYEAR-10-01')"
+  query_stcg_base ^
+  "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
+   julianday(S.order_date) < julianday('OLDYEAR-10-01')"
 
 let query_stcg_q3_onlystocks =
-  query_stcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
-                     julianday(S.order_date) < julianday('NEWYEAR-01-01')"
+  query_stcg_base ^
+  "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
+   julianday(S.order_date) < julianday('NEWYEAR-01-01')"
 
 let query_stcg_q4_onlystocks =
-  query_stcg_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
-                     julianday(S.order_date) < julianday('NEWYEAR-03-16')"
+  query_stcg_base ^
+  "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
+   julianday(S.order_date) < julianday('NEWYEAR-03-16')"
 
 let query_stcg_q5_onlystocks =
-  query_stcg_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
-                     julianday(S.order_date) < julianday('NEWYEAR-04-01')"
+  query_stcg_base ^
+  "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
+   julianday(S.order_date) < julianday('NEWYEAR-04-01')"
 
 let query_ltcg_base =
   query_base ">="
 
 let query_ltcg_q1_onlystocks =
-  query_ltcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
-                     julianday(S.order_date) < julianday('OLDYEAR-07-01')"
+  query_ltcg_base ^
+  "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
+   julianday(S.order_date) < julianday('OLDYEAR-07-01')"
 
 let query_ltcg_q2_onlystocks =
-  query_ltcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
-                     julianday(S.order_date) < julianday('OLDYEAR-10-01')"
+  query_ltcg_base ^
+  "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
+   julianday(S.order_date) < julianday('OLDYEAR-10-01')"
 
 let query_ltcg_q3_onlystocks =
-  query_ltcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
-                     julianday(S.order_date) < julianday('NEWYEAR-01-01')"
+  query_ltcg_base ^
+  "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
+   julianday(S.order_date) < julianday('NEWYEAR-01-01')"
 
 let query_ltcg_q4_onlystocks =
-  query_ltcg_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
-                     julianday(S.order_date) < julianday('NEWYEAR-03-16')"
+  query_ltcg_base ^
+  "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
+   julianday(S.order_date) < julianday('NEWYEAR-03-16')"
 
 let query_ltcg_q5_onlystocks =
-  query_ltcg_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
-                     julianday(S.order_date) < julianday('NEWYEAR-04-01')"
+  query_ltcg_base ^
+  "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
+   julianday(S.order_date) < julianday('NEWYEAR-04-01')"
 
 let query_onlyspecial opstr =
   "select S.scrip, B.order_date, S.order_date,sum(n_stocks * S.peramount) as \
@@ -104,7 +114,7 @@ let query_onlyspecial opstr =
    total_charges from sale_data join raw_transaction_information as S on S.id \
    = sale_id join raw_transaction_information as B on B.id = buy_id where \
    S.scrip in (" ^ special_scrip_list ^ ") and \
-                                         julianday(S.order_date) - julianday(B.order_date) " ^ opstr ^ " 365 group by S.scrip"
+   julianday(S.order_date) - julianday(B.order_date) " ^ opstr ^ " 365 group by S.scrip"
 
 let query_stcg_onlyspecial =
   query_onlyspecial "<"
@@ -121,7 +131,7 @@ let query_onlyspecial_base opstr =
    raw_transaction_information as S on S.id = sale_id join \
    raw_transaction_information as B on B.id = buy_id where \
    S.scrip in (" ^ special_scrip_list ^ ") and \
-                                       julianday(S.order_date) - julianday(B.order_date) " ^ opstr ^ " 365 and "
+   julianday(S.order_date) - julianday(B.order_date) " ^ opstr ^ " 365 and "
 
 let query_stcg_onlyspecial_base =
   query_onlyspecial_base "<"
