@@ -21,7 +21,7 @@ let special_scrip_list =
   ["GOLDBEES"]
   |> List.map ~f:(fun x -> "'" ^ x ^ "'") |> String.concat ~sep:","
 
-let query_stcg_onlystocks =
+let query_onlystocks_base opstr =
   "select S.scrip, B.order_date, S.order_date,sum(n_stocks * S.peramount) as \
    total_value, sum(n_stocks * (S.peramount - B.peramount)) as gain, \
    sum(n_stocks * (B.exchange_fees + B.stamp_duty + B.sebi_turnover_fees + \
@@ -30,20 +30,15 @@ let query_stcg_onlystocks =
    total_charges from sale_data join raw_transaction_information as S on S.id \
    = sale_id join raw_transaction_information as B on B.id = buy_id where \
    S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 group by S.scrip"
+   julianday(S.order_date) - julianday(B.order_date) " ^ opstr ^ " 365 group by S.scrip"
 
 let query_ltcg_onlystocks =
-  "select S.scrip, B.order_date, S.order_date,sum(n_stocks * S.peramount) as \
-   total_value, sum(n_stocks * (S.peramount - B.peramount)) as gain, \
-   sum(n_stocks * (B.exchange_fees + B.stamp_duty + B.sebi_turnover_fees + \
-   B.brokerage + B.gst) / B.quantity + n_stocks * (S.exchange_fees + \
-   S.stamp_duty + S.sebi_turnover_fees + S.brokerage + S.gst) / S.quantity) as \
-   total_charges from sale_data join raw_transaction_information as S on S.id \
-   = sale_id join raw_transaction_information as B on B.id = buy_id where \
-   S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 group by S.scrip"
+  query_onlystocks_base ">="
 
-let query_stcg_base =
+let query_stcg_onlystocks =
+  query_onlystocks_base "<"
+
+let query_base opstr =
   "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
    (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
    B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
@@ -52,7 +47,10 @@ let query_stcg_base =
    raw_transaction_information as S on S.id = sale_id join \
    raw_transaction_information as B on B.id = buy_id where \
    S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 and "
+   julianday(S.order_date) - julianday(B.order_date) " ^ opstr ^ " 365 and "
+
+let query_stcg_base =
+  query_base "<"
 
 let query_stcg_q1_onlystocks =
   query_stcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
@@ -75,15 +73,7 @@ let query_stcg_q5_onlystocks =
    julianday(S.order_date) < julianday('NEWYEAR-04-01')"
 
 let query_ltcg_base =
-  "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
-   (S.peramount - B.peramount)) as gain, sum(n_stocks * (B.exchange_fees + \
-   B.stamp_duty + B.sebi_turnover_fees + B.brokerage + B.gst) / B.quantity + \
-   n_stocks * (S.exchange_fees + S.stamp_duty + S.sebi_turnover_fees + \
-   S.brokerage + S.gst) / S.quantity) as total_charges from sale_data join \
-   raw_transaction_information as S on S.id = sale_id join \
-   raw_transaction_information as B on B.id = buy_id where \
-   S.scrip not in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 and "
+  query_base ">="
 
 let query_ltcg_q1_onlystocks =
    query_ltcg_base ^ "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
@@ -105,7 +95,7 @@ let query_ltcg_q5_onlystocks =
   query_ltcg_base ^ "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
    julianday(S.order_date) < julianday('NEWYEAR-04-01')"
 
-let query_stcg_onlyspecial =
+let query_onlyspecial opstr =
   "select S.scrip, B.order_date, S.order_date,sum(n_stocks * S.peramount) as \
    total_value, sum(n_stocks * (S.peramount - B.peramount)) as gain, \
    sum(n_stocks * (B.exchange_fees + B.stamp_duty + B.sebi_turnover_fees + \
@@ -114,18 +104,13 @@ let query_stcg_onlyspecial =
    total_charges from sale_data join raw_transaction_information as S on S.id \
    = sale_id join raw_transaction_information as B on B.id = buy_id where \
    S.scrip in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) < 365 group by S.scrip"
+   julianday(S.order_date) - julianday(B.order_date) " ^ opstr ^ " 365 group by S.scrip"
+
+let query_stcg_onlyspecial =
+  query_onlyspecial "<"
 
 let query_ltcg_onlyspecial =
-  "select S.scrip, B.order_date, S.order_date,sum(n_stocks * S.peramount) as \
-   total_value, sum(n_stocks * (S.peramount - B.peramount)) as gain, \
-   sum(n_stocks * (B.exchange_fees + B.stamp_duty + B.sebi_turnover_fees + \
-   B.brokerage + B.gst) / B.quantity + n_stocks * (S.exchange_fees + \
-   S.stamp_duty + S.sebi_turnover_fees + S.brokerage + S.gst) / S.quantity) as \
-   total_charges from sale_data join raw_transaction_information as S on S.id \
-   = sale_id join raw_transaction_information as B on B.id = buy_id where \
-   S.scrip in (" ^ special_scrip_list ^ ") and \
-   julianday(S.order_date) - julianday(B.order_date) >= 365 group by S.scrip"
+  query_onlyspecial ">="
 
 let query_stcg_onlyspecial_base =
     "select sum(n_stocks * S.peramount) as total_value, sum(n_stocks * \
