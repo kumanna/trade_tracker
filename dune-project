@@ -5,22 +5,20 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github kumanna/trade_tracker))
 
-(authors "Author Name")
+(authors "Kumar Appaiah")
 
-(maintainers "Maintainer Name")
+(maintainers "Kumar Appaiah")
 
-(license LICENSE)
+(license GPL-3.0-or-later)
 
-(documentation https://url/to/documentation)
+(documentation https://github.com/kumanna/trade_tracker/blob/master/README.md)
 
 (package
  (name trade_tracker)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml dune)
+ (synopsis "Trade tracker")
+ (description "A barebones trade tracker to track costs incurred when executing delivery trades on Indian stock exchanges.")
+ (depends ocaml dune sqlite3 ppx_jane core_unix)
  (tags
-  (topics "to describe" your project)))
-
-; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
+  (topics stock trade tax india)))
