@@ -18,7 +18,7 @@
 open Core
 
 let special_scrip_list =
-  ["GOLDBEES"; "SBIGETS"]
+  ["GOLDBEES"; "SETFGOLD"]
   |> List.map ~f:(fun x -> "'" ^ x ^ "'") |> String.concat ~sep:","
 
 let query_onlystocks_base opstr =
