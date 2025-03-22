@@ -71,11 +71,11 @@ let query_stcg_q2_onlystocks =
 let query_stcg_q3_onlystocks =
   query_stcg_base ^
   "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q3_beginning ^ "') and \
-   julianday(S.order_date) < julianday('NEWYEAR-" ^ q4_beginning ^ "')"
+   julianday(S.order_date) < julianday('OLDYEAR-" ^ q4_beginning ^ "')"
 
 let query_stcg_q4_onlystocks =
   query_stcg_base ^
-  "julianday(S.order_date) >= julianday('NEWYEAR-" ^ q4_beginning ^ "') and \
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q4_beginning ^ "') and \
    julianday(S.order_date) < julianday('NEWYEAR-" ^ q5_beginning ^ "')"
 
 let query_stcg_q5_onlystocks =
@@ -99,11 +99,11 @@ let query_ltcg_q2_onlystocks =
 let query_ltcg_q3_onlystocks =
   query_ltcg_base ^
   "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q3_beginning ^ "') and \
-   julianday(S.order_date) < julianday('NEWYEAR-" ^ q4_beginning ^ "')"
+   julianday(S.order_date) < julianday('OLDYEAR-" ^ q4_beginning ^ "')"
 
 let query_ltcg_q4_onlystocks =
   query_ltcg_base ^
-  "julianday(S.order_date) >= julianday('NEWYEAR-" ^ q4_beginning ^ "') and \
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q4_beginning ^ "') and \
    julianday(S.order_date) < julianday('NEWYEAR-" ^ q5_beginning ^ "')"
 
 let query_ltcg_q5_onlystocks =
@@ -155,11 +155,11 @@ let query_stcg_q2_onlyspecial =
 let query_stcg_q3_onlyspecial =
   query_stcg_onlyspecial_base ^
   "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q3_beginning ^ "') and \
-   julianday(S.order_date) < julianday('NEWYEAR-" ^ q4_beginning ^ "')"
+   julianday(S.order_date) < julianday('OLDYEAR-" ^ q4_beginning ^ "')"
 
 let query_stcg_q4_onlyspecial =
   query_stcg_onlyspecial_base ^
-  "julianday(S.order_date) >= julianday('NEWYEAR-" ^ q4_beginning ^ "') and \
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q4_beginning ^ "') and \
    julianday(S.order_date) < julianday('NEWYEAR-" ^ q5_beginning ^ "')"
 
 let query_stcg_q5_onlyspecial =
@@ -183,11 +183,11 @@ let query_ltcg_q2_onlyspecial =
 let query_ltcg_q3_onlyspecial =
   query_ltcg_onlyspecial_base ^
   "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q3_beginning ^ "') and \
-   julianday(S.order_date) < julianday('NEWYEAR-" ^ q4_beginning ^ "')"
+   julianday(S.order_date) < julianday('OLDYEAR-" ^ q4_beginning ^ "')"
 
 let query_ltcg_q4_onlyspecial =
   query_ltcg_onlyspecial_base ^
-  "julianday(S.order_date) >= julianday('NEWYEAR-" ^ q4_beginning ^ "') and \
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q4_beginning ^ "') and \
    julianday(S.order_date) < julianday('NEWYEAR-" ^ q5_beginning ^ "')"
 
 let query_ltcg_q5_onlyspecial =
@@ -207,17 +207,12 @@ let generate_yearwise_capgains_helper db year quarter query =
      | [ [| Some total_value; Some gain; Some charges |] ] ->
        let gain_num = Float.(of_string gain -. of_string charges) in
        (Printf.sprintf
-          "%s total value of consideration: %.2f\n\
-           Buy price: %.2f\n\
-           %s gain: %.2f\n\
-           %s charges: %.2f\n\
-           %s net: %.2f\n"
+          "%s,%.2f,%.2f,%.2f,%.2f,%.2f"
           quarter (Float.of_string total_value)
           Float.(of_string total_value -. of_string gain)
-          quarter (Float.of_string gain) quarter (Float.of_string charges) quarter
-          gain_num |> print_endline;
-        print_endline (Float.to_string gain_num))
-     | _ -> print_endline (quarter ^ ": No transactions\n"))
+          (Float.of_string gain)  (Float.of_string charges)
+          gain_num |> print_endline)
+     | _ -> print_endline (quarter ^ ": No transactions"))
   else print_endline ("Error getting " ^ quarter ^ " transactions!\n")
 
 let generate_yearwise_capgains db year stcg =
@@ -296,7 +291,7 @@ let process_file dbname year =
       | Some x ->
         print_endline (Printf.sprintf "STCG REPORT for %d-%d" y (y + 1));
         generate_yearwise_capgains x y true;
-        print_endline (Printf.sprintf "LTCG REPORT for %d-%d" y (y + 1));
+        print_endline (Printf.sprintf "\nLTCG REPORT for %d-%d" y (y + 1));
         generate_yearwise_capgains x y false;
         if Db_wrapper.close_database x then ()
         else print_endline "Failure closing database!"
