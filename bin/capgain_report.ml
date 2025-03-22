@@ -212,18 +212,20 @@ let generate_yearwise_capgains_helper db year quarter query =
           Float.(of_string total_value -. of_string gain)
           (Float.of_string gain)  (Float.of_string charges)
           gain_num |> print_endline)
-     | _ -> print_endline (quarter ^ ": No transactions"))
+     | _ -> print_endline (quarter ^ ",0,0,0,0,0"))
   else print_endline ("Error getting " ^ quarter ^ " transactions!\n")
 
 let generate_yearwise_capgains db year stcg =
   print_endline "STOCKS";
   if stcg then (
+    print_endline "quarter,total_value,buy_price,gain,charges,net_gain";
     generate_yearwise_capgains_helper db year "Q1" query_stcg_q1_onlystocks;
     generate_yearwise_capgains_helper db year "Q2" query_stcg_q2_onlystocks;
     generate_yearwise_capgains_helper db year "Q3" query_stcg_q3_onlystocks;
     generate_yearwise_capgains_helper db year "Q4" query_stcg_q4_onlystocks;
     generate_yearwise_capgains_helper db year "Q5" query_stcg_q5_onlystocks)
   else (
+    print_endline "quarter,total_value,buy_price,gain,charges,net_gain";
     generate_yearwise_capgains_helper db year "Q1" query_ltcg_q1_onlystocks;
     generate_yearwise_capgains_helper db year "Q2" query_ltcg_q2_onlystocks;
     generate_yearwise_capgains_helper db year "Q3" query_ltcg_q3_onlystocks;
@@ -232,12 +234,14 @@ let generate_yearwise_capgains db year stcg =
   print_endline "";
   print_endline "SPECIAL SCRIPS";
   if stcg then (
+    print_endline "quarter,total_value,buy_price,gain,charges,net_gain";
     generate_yearwise_capgains_helper db year "Q1" query_stcg_q1_onlyspecial;
     generate_yearwise_capgains_helper db year "Q2" query_stcg_q2_onlyspecial;
     generate_yearwise_capgains_helper db year "Q3" query_stcg_q3_onlyspecial;
     generate_yearwise_capgains_helper db year "Q4" query_stcg_q4_onlyspecial;
     generate_yearwise_capgains_helper db year "Q5" query_stcg_q5_onlyspecial)
   else (
+    print_endline "quarter,total_value,buy_price,gain,charges,net_gain";
     generate_yearwise_capgains_helper db year "Q1" query_ltcg_q1_onlyspecial;
     generate_yearwise_capgains_helper db year "Q2" query_ltcg_q2_onlyspecial;
     generate_yearwise_capgains_helper db year "Q3" query_ltcg_q3_onlyspecial;
