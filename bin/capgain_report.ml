@@ -17,6 +17,12 @@
 
 open Core
 
+let q1_beginning = "04-01"
+let q2_beginning = "06-16"
+let q3_beginning = "09-16"
+let q4_beginning = "12-16"
+let q5_beginning = "03-16"
+
 let special_scrip_list =
   ["GOLDBEES"; "SETFGOLD"]
   |> List.map ~f:(fun x -> "'" ^ x ^ "'") |> String.concat ~sep:","
@@ -54,56 +60,56 @@ let query_stcg_base =
 
 let query_stcg_q1_onlystocks =
   query_stcg_base ^
-  "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
-   julianday(S.order_date) < julianday('OLDYEAR-07-01')"
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q1_beginning ^ "') and \
+   julianday(S.order_date) < julianday('OLDYEAR-" ^ q2_beginning ^ "')"
 
 let query_stcg_q2_onlystocks =
   query_stcg_base ^
-  "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
-   julianday(S.order_date) < julianday('OLDYEAR-10-01')"
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q2_beginning ^ "') and \
+   julianday(S.order_date) < julianday('OLDYEAR-" ^ q3_beginning ^ "')"
 
 let query_stcg_q3_onlystocks =
   query_stcg_base ^
-  "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
-   julianday(S.order_date) < julianday('NEWYEAR-01-01')"
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q3_beginning ^ "') and \
+   julianday(S.order_date) < julianday('NEWYEAR-" ^ q4_beginning ^ "')"
 
 let query_stcg_q4_onlystocks =
   query_stcg_base ^
-  "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
-   julianday(S.order_date) < julianday('NEWYEAR-03-16')"
+  "julianday(S.order_date) >= julianday('NEWYEAR-" ^ q4_beginning ^ "') and \
+   julianday(S.order_date) < julianday('NEWYEAR-" ^ q5_beginning ^ "')"
 
 let query_stcg_q5_onlystocks =
   query_stcg_base ^
-  "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
-   julianday(S.order_date) < julianday('NEWYEAR-04-01')"
+  "julianday(S.order_date) >= julianday('NEWYEAR-" ^ q5_beginning ^ "') and \
+   julianday(S.order_date) < julianday('NEWYEAR-" ^ q1_beginning ^ "')"
 
 let query_ltcg_base =
   query_base ">="
 
 let query_ltcg_q1_onlystocks =
   query_ltcg_base ^
-  "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
-   julianday(S.order_date) < julianday('OLDYEAR-07-01')"
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q1_beginning ^ "') and \
+   julianday(S.order_date) < julianday('OLDYEAR-" ^ q2_beginning ^ "')"
 
 let query_ltcg_q2_onlystocks =
   query_ltcg_base ^
-  "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
-   julianday(S.order_date) < julianday('OLDYEAR-10-01')"
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q2_beginning ^ "') and \
+   julianday(S.order_date) < julianday('OLDYEAR-" ^ q3_beginning ^ "')"
 
 let query_ltcg_q3_onlystocks =
   query_ltcg_base ^
-  "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
-   julianday(S.order_date) < julianday('NEWYEAR-01-01')"
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q3_beginning ^ "') and \
+   julianday(S.order_date) < julianday('NEWYEAR-" ^ q4_beginning ^ "')"
 
 let query_ltcg_q4_onlystocks =
   query_ltcg_base ^
-  "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
-   julianday(S.order_date) < julianday('NEWYEAR-03-16')"
+  "julianday(S.order_date) >= julianday('NEWYEAR-" ^ q4_beginning ^ "') and \
+   julianday(S.order_date) < julianday('NEWYEAR-" ^ q5_beginning ^ "')"
 
 let query_ltcg_q5_onlystocks =
   query_ltcg_base ^
-  "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
-   julianday(S.order_date) < julianday('NEWYEAR-04-01')"
+  "julianday(S.order_date) >= julianday('NEWYEAR-" ^ q5_beginning ^ "') and \
+   julianday(S.order_date) < julianday('NEWYEAR-" ^ q1_beginning ^ "')"
 
 let query_onlyspecial opstr =
   "select S.scrip, B.order_date, S.order_date,sum(n_stocks * S.peramount) as \
@@ -138,56 +144,56 @@ let query_stcg_onlyspecial_base =
 
 let query_stcg_q1_onlyspecial =
   query_stcg_onlyspecial_base ^
-  "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
-   julianday(S.order_date) < julianday('OLDYEAR-07-01')"
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q1_beginning ^ "') and \
+   julianday(S.order_date) < julianday('OLDYEAR-" ^ q2_beginning ^ "')"
 
 let query_stcg_q2_onlyspecial =
   query_stcg_onlyspecial_base ^
-  "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
-   julianday(S.order_date) < julianday('OLDYEAR-10-01')"
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q2_beginning ^ "') and \
+   julianday(S.order_date) < julianday('OLDYEAR-" ^ q3_beginning ^ "')"
 
 let query_stcg_q3_onlyspecial =
   query_stcg_onlyspecial_base ^
-  "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
-   julianday(S.order_date) < julianday('NEWYEAR-01-01')"
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q3_beginning ^ "') and \
+   julianday(S.order_date) < julianday('NEWYEAR-" ^ q4_beginning ^ "')"
 
 let query_stcg_q4_onlyspecial =
   query_stcg_onlyspecial_base ^
-  "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
-   julianday(S.order_date) < julianday('NEWYEAR-03-16')"
+  "julianday(S.order_date) >= julianday('NEWYEAR-" ^ q4_beginning ^ "') and \
+   julianday(S.order_date) < julianday('NEWYEAR-" ^ q5_beginning ^ "')"
 
 let query_stcg_q5_onlyspecial =
   query_stcg_onlyspecial_base ^
-  "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
-   julianday(S.order_date) < julianday('NEWYEAR-04-01')"
+  "julianday(S.order_date) >= julianday('NEWYEAR-" ^ q5_beginning ^ "') and \
+   julianday(S.order_date) < julianday('NEWYEAR-" ^ q1_beginning ^ "')"
 
 let query_ltcg_onlyspecial_base =
   query_onlyspecial_base ">="
 
 let query_ltcg_q1_onlyspecial =
   query_ltcg_onlyspecial_base ^
-  "julianday(S.order_date) >= julianday('OLDYEAR-04-01') and \
-   julianday(S.order_date) < julianday('OLDYEAR-07-01')"
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q1_beginning ^ "') and \
+   julianday(S.order_date) < julianday('OLDYEAR-" ^ q2_beginning ^ "')"
 
 let query_ltcg_q2_onlyspecial =
   query_ltcg_onlyspecial_base ^
-  "julianday(S.order_date) >= julianday('OLDYEAR-07-01') and \
-   julianday(S.order_date) < julianday('OLDYEAR-10-01')"
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q2_beginning ^ "') and \
+   julianday(S.order_date) < julianday('OLDYEAR-" ^ q3_beginning ^ "')"
 
 let query_ltcg_q3_onlyspecial =
   query_ltcg_onlyspecial_base ^
-  "julianday(S.order_date) >= julianday('OLDYEAR-10-01') and \
-   julianday(S.order_date) < julianday('NEWYEAR-01-01')"
+  "julianday(S.order_date) >= julianday('OLDYEAR-" ^ q3_beginning ^ "') and \
+   julianday(S.order_date) < julianday('NEWYEAR-" ^ q4_beginning ^ "')"
 
 let query_ltcg_q4_onlyspecial =
   query_ltcg_onlyspecial_base ^
-  "julianday(S.order_date) >= julianday('NEWYEAR-01-01') and \
-   julianday(S.order_date) < julianday('NEWYEAR-03-16')"
+  "julianday(S.order_date) >= julianday('NEWYEAR-" ^ q4_beginning ^ "') and \
+   julianday(S.order_date) < julianday('NEWYEAR-" ^ q5_beginning ^ "')"
 
 let query_ltcg_q5_onlyspecial =
   query_ltcg_onlyspecial_base ^
-  "julianday(S.order_date) >= julianday('NEWYEAR-03-15') and \
-   julianday(S.order_date) < julianday('NEWYEAR-04-01')"
+  "julianday(S.order_date) >= julianday('NEWYEAR-" ^ q5_beginning ^ "') and \
+   julianday(S.order_date) < julianday('NEWYEAR-" ^ q1_beginning ^ "')"
 
 let generate_yearwise_capgains_helper db year quarter query =
   let rows = ref [] in
