@@ -17,58 +17,52 @@
 
 open Core
 
-let update_brokerage_gst db order_num brokerage gst =
-  Db_wrapper.run_query db
-    (Printf.sprintf
-       "update raw_transaction_information set brokerage = %f * quantity where \
-        order_num = '%s';"
-       brokerage order_num)
-  && Db_wrapper.run_query db
-       (Printf.sprintf
-          "update raw_transaction_information set gst = %f * \
-           (sebi_turnover_fees + brokerage + exchange_fees) where order_num = \
-           '%s';"
-          (gst /. 100.) order_num)
-
-let get_order_total_amounts db order_num =
+let process_file_with_db db percentage flatfee gst =
   let query =
-    Printf.sprintf
-      "select sum(quantity * peramount),sum(quantity) from \
-       raw_transaction_information where order_num = '%s';"
-      order_num
+    "select order_num, sum(quantity * peramount), sum(quantity) from \
+     raw_transaction_information where brokerage is NULL group by order_num;"
   in
   let rows = ref [] in
   if Db_wrapper.run_query_callback db ~cb:(fun x -> rows := x :: !rows) query
   then
-    match ((List.hd_exn !rows).(0), (List.hd_exn !rows).(1)) with
-    | Some a, Some b -> (Float.of_string a, Float.of_string b)
-    | _ -> (0.0, 0.0)
-  else (0.0, 0.0)
-
-let process_file_with_db db percentage flatfee gst =
-  let rows = ref [] in
-  if
-    Db_wrapper.run_query_callback db
-      ~cb:(fun x -> rows := x :: !rows)
-      "select distinct order_num from raw_transaction_information where \
-       brokerage is NULL;"
-  then
-    List.map
-      ~f:(fun x ->
-        match x.(0) with
-        | Some a ->
-            let amount, quantity = get_order_total_amounts db a in
-            let b =
-              if Float.(amount *. percentage /. 100. > flatfee) then
-                flatfee /. quantity
-              else amount *. percentage /. quantity /. 100.
-            in
-            if update_brokerage_gst db a b gst then
-              "Added brokerage for order " ^ a ^ "!"
-            else "Error adding brokerage for order " ^ a ^ "!"
-        | None -> "ERROR getting order quantities!")
-      !rows
-    |> String.concat ~sep:"\n" |> print_endline
+    if Db_wrapper.run_query db "begin transaction" then (
+      let results =
+        List.map
+          ~f:(fun row ->
+            match row with
+            | [| Some order_num; Some amount_str; Some quantity_str |] -> (
+                let amount = Float.of_string amount_str in
+                let quantity = Float.of_string quantity_str in
+                let b =
+                  if Float.(amount *. percentage /. 100. > flatfee) then
+                    flatfee /. quantity
+                  else amount *. percentage /. quantity /. 100.
+                in
+                let update1 =
+                  Db_wrapper.run_query db
+                    (Printf.sprintf
+                       "update raw_transaction_information set brokerage = %f * \
+                        quantity where order_num = '%s';"
+                       b order_num)
+                in
+                let update2 =
+                  Db_wrapper.run_query db
+                    (Printf.sprintf
+                       "update raw_transaction_information set gst = %f * \
+                        (sebi_turnover_fees + brokerage + exchange_fees) where \
+                        order_num = '%s';"
+                       (gst /. 100.) order_num)
+                in
+                if update1 && update2 then
+                  "Added brokerage for order " ^ order_num ^ "!"
+                else "Error adding brokerage for order " ^ order_num ^ "!")
+            | _ -> "ERROR: Invalid row from order aggregation query!")
+          !rows
+      in
+      if Db_wrapper.run_query db "end transaction" then
+        String.concat ~sep:"\n" results |> print_endline
+      else print_endline "ERROR: Failed to commit transaction!")
+    else print_endline "ERROR: Failed to begin transaction!"
   else print_endline "ERROR READING NULL BROKERAGE ROWS!"
 
 let add_missing_brokerages dbname percentage flatfee gst =
